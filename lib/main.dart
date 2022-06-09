@@ -41,6 +41,13 @@ class _HomePageState extends State<HomePage> {
       body: Padding(
         padding: EdgeInsets.all(18.0),
         child: PageView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          controller: _controller!,
+          onPageChanged: (page) {
+            setState(() {
+              isPressed = false;
+            });
+          },
           itemCount: questions.length,
           itemBuilder: (context, index) {
             return Column(
@@ -100,6 +107,7 @@ class _HomePageState extends State<HomePage> {
                                   .toList()[i]
                                   .value) {
                                 score += 10;
+                                print(score);
                               }
                             },
                       child: Text(
@@ -117,10 +125,20 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     OutlinedButton(
-                      onPressed: () {},
+                      onPressed: isPressed
+                          ? index + 1 == questions.length
+                              ? () {}
+                              : () {
+                                  _controller!.nextPage(
+                                      duration: Duration(milliseconds: 500),
+                                      curve: Curves.linear);
+                                }
+                          : null,
                       style: ButtonStyle(),
                       child: Text(
-                        "Next Question",
+                        index + 1 == questions.length
+                            ? "See result"
+                            : "Next Question",
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
